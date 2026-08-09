@@ -37,7 +37,10 @@ export const Dijkstra = (start: string, target: string, graph: AdjacencyList) =>
         steps.push({
             current: vertex,
             vertices: path.slice(0, path.indexOf(vertex) + 1),
-            edges: path.slice(0, path.indexOf(vertex)).map((v, i) => `${v}-${path[i + 1]}`),
+            edges: path.slice(0, path.indexOf(vertex)).map((_, i) => {
+                const [source, target] = [path[i], path[i + 1]].sort((a, b) => Number(a) - Number(b));
+                return `${source}-${target}`;
+            }),
         });
     }
     return steps;

@@ -2,7 +2,7 @@ import {createContext, type ReactNode, useContext, useMemo, useRef, useState} fr
 import type {EdgeProps} from "../component/Graph/Edge/Edge.tsx";
 import type {VertexProps} from "../component/Graph/Vertex/Vertex.tsx";
 import {InitialGraphState} from "../utils/InitialGraphState.ts";
-import type {Point} from "../utils/Constants.ts";
+import {ALGORITHM_DELAY, type Point} from "../utils/Constants.ts";
 import {Mode, type ModeType} from "../utils/Mode.ts";
 import {type AlgorithmStep, type AlgorithmType} from "../utils/Algorithms.ts";
 import {createAdjacencyList} from "../utils/AdjacencyList.ts";
@@ -12,6 +12,8 @@ type GraphContextValue = {
     edges: EdgeProps[],
     selectedVertex: string | null,
     setSelectedVertex: (id: string | null) => void,
+    targetVertex: string | null,
+    setTargetVertex: (id: string | null) => void,
     addVertex: (position: Point) => void,
     updateVertex: (updatedVertex: VertexProps) => void,
     addEdge: (s: string, t: string) => void,
@@ -39,6 +41,7 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
     const [currentAlgorithm, setCurrentAlgorithm] = useState<AlgorithmType | null>(null);
     const adjacencyList = useMemo(() => createAdjacencyList(vertices, edges), [vertices, edges]);
 
+    const [targetVertex, setTargetVertex] = useState<string | null>(null);
     const [activeStep, setActiveStep] = useState<AlgorithmStep | null>(null);
     const [isAnimationRunning, setIsAnimationRunning] = useState<boolean>(false);
 
@@ -71,7 +74,7 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
     }
 
     const addEdge = (s: string, t: string) => {
-        const [source, target] = [s, t].sort();
+        const [source, target] = [s, t].sort((a, b) => Number(a) - Number(b));
         const isAlreadyConnected = edges.some(edge => edge.id === `${source}-${target}`);
         if (isAlreadyConnected) return;
         const sourceVertex = getVertexById(source);
@@ -87,11 +90,9 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         if (!currentAlgorithm || !selectedVertex || isAnimationRunning) return;
 
         let steps;
-
-
         if (currentAlgorithm.id === "dijkstra") {
-            steps = currentAlgorithm.function(selectedVertex, "5", adjacencyList);
-            console.log(steps);
+            steps = currentAlgorithm.function(selectedVertex, targetVertex, adjacencyList);
+            console.log(steps, edges);
         }
         else {
             steps = currentAlgorithm.function(selectedVertex, adjacencyList);
@@ -104,11 +105,10 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         try {
             for (const step of steps) {
                 setActiveStep(step);
-
-                await sleep(700);
+                await sleep(ALGORITHM_DELAY);
             }
         } finally {
-            setActiveStep(null);
+            // setActiveStep(null);
             setIsAnimationRunning(false);
         }
     };
@@ -118,6 +118,8 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         edges,
         selectedVertex,
         setSelectedVertex,
+        targetVertex,
+        setTargetVertex,
         addVertex,
         updateVertex,
         addEdge,

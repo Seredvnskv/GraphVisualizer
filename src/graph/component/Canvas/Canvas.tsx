@@ -31,8 +31,10 @@ export const Canvas = () => {
         graph.addVertex(convertToSVGCoordinates({x: event.clientX, y: event.clientY}));
     }
 
-    const onVertexClick = (id: string) => {
-        if (graph.currentMode() === Mode.Select) selectVertex(id);
+    const onVertexClick = (id: string, event: React.MouseEvent) => {
+        if (graph.currentMode() === Mode.Select) {
+            event.ctrlKey ? selectTargetVertex(id) : selectVertex(id);
+        }
         if (graph.currentMode() === Mode.Connect) {
             if (!graph.selectedVertex || graph.selectedVertex === id) {
                 selectVertex(id);
@@ -46,6 +48,10 @@ export const Canvas = () => {
 
     const selectVertex = (id: string) => {
         id === graph.selectedVertex ? graph.setSelectedVertex(null) : graph.setSelectedVertex(id);
+    }
+
+    const selectTargetVertex = (id: string) => {
+        id === graph.targetVertex ? graph.setTargetVertex(null) : graph.setTargetVertex(id);
     }
 
     const connectVertices = (source: string, target: string) => {
@@ -62,6 +68,7 @@ export const Canvas = () => {
                         source={edge.source}
                         target={edge.target}
                         weight={edge.weight}
+                        isVisited={graph.activeStep?.edges.includes(edge.id)}
                     />
                 ))}
 
@@ -75,6 +82,7 @@ export const Canvas = () => {
                         isSelected={graph.selectedVertex === vertex.id}
                         isVisited={graph.activeStep?.vertices.includes(vertex.id)}
                         isCurrent={graph.activeStep?.current === vertex.id}
+                        isTarget={graph.targetVertex === vertex.id}
                     />
                 ))}
             </>

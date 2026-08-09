@@ -4,15 +4,15 @@ export type VertexProps = {
     id: string;
     position: Point;
     label?: string;
-    onVertexClick?: (id: string) => void;
+    onVertexClick?: (id: string, event: React.MouseEvent) => void;
     isSelected?: boolean;
     isCurrent?: boolean;
     isVisited?: boolean;
+    isTarget?: boolean;
 }
 
 export const Vertex = (props: VertexProps) => {
     const label = props.label || EMPTY_STRING;
-
     let color = VERTEX_COLORS.default;
 
     if (props.isVisited) {
@@ -24,12 +24,15 @@ export const Vertex = (props: VertexProps) => {
     if (props.isCurrent) {
         color = VERTEX_COLORS.current;
     }
+    if (props.isTarget) {
+        color = VERTEX_COLORS.target;
+    }
 
     return (
         <g
             className="cursor-grab select-none"
             transform={`translate(${props.position.x}, ${props.position.y})`}
-            onClick={() => props.onVertexClick?.(props.id)}
+            onClick={(event) => props.onVertexClick?.(props.id, event)}
         >
             <circle
                 r={radius}

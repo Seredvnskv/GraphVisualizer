@@ -6,10 +6,19 @@ export type EdgeProps = {
     source: VertexProps;
     target: VertexProps;
     weight: number;
+    isSelected?: boolean;
+    isVisited?: boolean;
 };
 
 export const Edge = (props: EdgeProps) => {
-    const color = EDGE_COLORS["default"];
+    let color = EDGE_COLORS.default;
+
+    if (props.isVisited) {
+        color = EDGE_COLORS.visited;
+    }
+    if (props.isSelected) {
+        color = EDGE_COLORS.selected;
+    }
 
     const midX = (props.source.position.x + props.target.position.x) / 2;
     const midY = (props.source.position.y + props.target.position.y) / 2;
@@ -21,7 +30,7 @@ export const Edge = (props: EdgeProps) => {
                 y1={props.source.position.y}
                 x2={props.target.position.x}
                 y2={props.target.position.y}
-                className={`${color}`}
+                className={`${color} transition-all duration-300`}
             />
             <text
                 x={midX}
