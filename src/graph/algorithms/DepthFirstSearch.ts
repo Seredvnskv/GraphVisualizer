@@ -16,13 +16,13 @@ export const DepthFirstSearch = (start: string, adjacencyList: AdjacencyList) =>
             edges: Array.from(visitedEdges),
         });
 
-        const neighbors = adjacencyList.get(current);
-        if (neighbors) {
-            for (const neighbor of neighbors) {
-                if (!visitedVertices.has(neighbor)) {
-                    visitedVertices.add(neighbor);
-                    visitedEdges.add(`${current}-${neighbor}`);
-                    stack.push(neighbor);
+        const adjacentVertices = adjacencyList.get(current);
+        if (adjacentVertices) {
+            for (const [vertex, _] of adjacentVertices) {
+                if (!visitedVertices.has(vertex)) {
+                    visitedVertices.add(vertex);
+                    visitedEdges.add(`${current}-${vertex}`);
+                    stack.push(vertex);
 
                     steps.push({
                         current: current,

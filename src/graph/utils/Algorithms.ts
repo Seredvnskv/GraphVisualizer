@@ -1,17 +1,17 @@
-import type {AdjacencyList} from "./AdjacencyList.ts";
 import {BreadthFirstSearch} from "../algorithms/BreadthFirstSearch.ts";
 import {DepthFirstSearch} from "../algorithms/DepthFirstSearch.ts";
+import {Dijkstra} from "../algorithms/Dijkstra.ts";
 
 export type AlgorithmType = {
     id: string;
     name: string;
-    function: (start: string, graph: AdjacencyList) => AlgorithmStep[];
+    function: (...args: any[]) => AlgorithmStep[];
 }
 
 export const Algorithms: AlgorithmType[] = [
     {id: "bfs", name: "Breadth-First Search", function: BreadthFirstSearch},
     {id: "dfs", name: "Depth-First Search", function: DepthFirstSearch},
-    {id: "dijkstra", name: "Dijkstra's Algorithm", function: () => []},
+    {id: "dijkstra", name: "Dijkstra's Algorithm", function: Dijkstra},
     {id: "a_star", name: "A* Search", function: () => []},
 ];
 

@@ -86,7 +86,16 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
     const runAlgorithm = async () => {
         if (!currentAlgorithm || !selectedVertex || isAnimationRunning) return;
 
-        const steps = currentAlgorithm.function(selectedVertex, adjacencyList);
+        let steps;
+
+
+        if (currentAlgorithm.id === "dijkstra") {
+            steps = currentAlgorithm.function(selectedVertex, "5", adjacencyList);
+            console.log(steps);
+        }
+        else {
+            steps = currentAlgorithm.function(selectedVertex, adjacencyList);
+        }
 
         if (!steps || steps.length === 0) return;
 
