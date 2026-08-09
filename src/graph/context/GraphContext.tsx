@@ -15,8 +15,10 @@ type GraphContextValue = {
     targetVertex: string | null,
     setTargetVertex: (id: string | null) => void,
     addVertex: (position: Point) => void,
+    deleteVertex: (id: string) => void,
     updateVertex: (updatedVertex: VertexProps) => void,
     addEdge: (s: string, t: string) => void,
+    deleteEdge: (id: string) => void,
     currentMode: () => ModeType,
     switchMode: (m: ModeType) => void,
     currentAlgorithm: AlgorithmType | null,
@@ -83,8 +85,16 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         setEdges(prev => [...prev, {id: `${source}-${target}`, source: sourceVertex, target: targetVertex, weight: 1}]);
     }
 
-    const sleep = (ms: number) =>
-        new Promise<void>(resolve => setTimeout(resolve, ms));
+    const deleteVertex = (id: string) => {
+        setVertices(prev => prev.filter(vertex => vertex.id !== id));
+        setEdges(prev => prev.filter(edge => edge.source.id !== id && edge.target.id !== id));
+        if (selectedVertex === id) setSelectedVertex(null);
+        if (targetVertex === id) setTargetVertex(null);
+    }
+
+    const deleteEdge = (id: string) => {
+        setEdges(prev => prev.filter(edge => edge.id !== id));
+    }
 
     const runAlgorithm = async () => {
         if (!currentAlgorithm || !selectedVertex || isAnimationRunning) return;
@@ -121,8 +131,10 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         targetVertex,
         setTargetVertex,
         addVertex,
+        deleteVertex,
         updateVertex,
         addEdge,
+        deleteEdge,
         currentMode,
         switchMode,
         currentAlgorithm,
@@ -146,3 +158,6 @@ export const useGraphContext = () => {
     }
     return context;
 }
+
+const sleep = (ms: number) =>
+    new Promise<void>(resolve => setTimeout(resolve, ms));

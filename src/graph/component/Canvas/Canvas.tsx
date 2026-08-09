@@ -44,6 +44,9 @@ export const Canvas = () => {
                 graph.setSelectedVertex(null);
             }
         }
+        if (graph.currentMode() === Mode.Delete) {
+            graph.deleteVertex(id);
+        }
     }
 
     const selectVertex = (id: string) => {
