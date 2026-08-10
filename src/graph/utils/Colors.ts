@@ -35,5 +35,5 @@ export const VERTEX_COLORS: Record<string, ColorSchema> = {
 export const EDGE_COLORS: Record<string, string> = {
     default: "stroke-indigo-900 stroke-6",
     selected: "stroke-amber-700 stroke-7",
-    visited: "stroke-emerald-600 stroke-7",
+    visited: "stroke-emerald-700 stroke-7",
 }

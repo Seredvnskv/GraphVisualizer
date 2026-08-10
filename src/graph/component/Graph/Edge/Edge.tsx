@@ -12,7 +12,6 @@ export type EdgeProps = {
 
 export const Edge = (props: EdgeProps) => {
     let color = EDGE_COLORS.default;
-
     if (props.isVisited) {
         color = EDGE_COLORS.visited;
     }
@@ -20,11 +19,11 @@ export const Edge = (props: EdgeProps) => {
         color = EDGE_COLORS.selected;
     }
 
-    const midX = (props.source.position.x + props.target.position.x) / 2;
-    const midY = (props.source.position.y + props.target.position.y) / 2;
+    const x = (props.source.position.x + props.target.position.x) / 2;
+    const y = (props.source.position.y + props.target.position.y) / 2;
 
     return (
-        <g>
+        <g className="select-none">
             <line
                 x1={props.source.position.x}
                 y1={props.source.position.y}
@@ -33,11 +32,11 @@ export const Edge = (props: EdgeProps) => {
                 className={`${color} transition-all duration-300`}
             />
             <text
-                x={midX}
-                y={midY}
+                x={x}
+                y={y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fill="white"
+                className={`text-lg font-bold ${color} stroke-black stroke-6 [paint-order:stroke]`}
             >
                 {props.weight}
             </text>

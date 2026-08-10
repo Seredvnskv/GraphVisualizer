@@ -49,16 +49,17 @@ export const Actionbar = () => {
                     disabled={graph.currentMode() !== Mode.Select}
                     showClear
                 />
-                {graph.currentAlgorithm && graph.currentMode() === Mode.Select && !graph.selectedVertex && (
-                    <span className="text-sm text-center text-gray-300">
-                        Please select a start node on the graph to run the algorithm.
-                    </span>
-                )}
                 {graph.currentAlgorithm && graph.currentMode() === Mode.Select && graph.selectedVertex && (
                     <Button
                         label="Run Algorithm"
                         onClick={() => graph.runAlgorithm()}
-                        disabled={graph.isAnimationRunning}
+                        disabled={graph.isAnimationRunning || graph.activeStep !== null}
+                    />
+                )}
+                {!graph.isAnimationRunning && graph.activeStep && (
+                    <Button
+                        label="Clear Animation"
+                        onClick={() => graph.clearAnimation()}
                     />
                 )}
             </div>

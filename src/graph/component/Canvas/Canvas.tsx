@@ -50,10 +50,16 @@ export const Canvas = () => {
     }
 
     const selectVertex = (id: string) => {
+        if (graph.targetVertex === id) {
+            graph.setTargetVertex(null);
+        }
         id === graph.selectedVertex ? graph.setSelectedVertex(null) : graph.setSelectedVertex(id);
     }
 
     const selectTargetVertex = (id: string) => {
+        if (graph.selectedVertex === id) {
+            graph.setSelectedVertex(null);
+        }
         id === graph.targetVertex ? graph.setTargetVertex(null) : graph.setTargetVertex(id);
     }
 

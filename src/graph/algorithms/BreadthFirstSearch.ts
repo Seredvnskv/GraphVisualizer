@@ -20,8 +20,9 @@ export const BreadthFirstSearch = (start: string, adjacencyList: AdjacencyList) 
         if (adjacentVertices) {
             for (const [vertex, _] of adjacentVertices) {
                 if (!visitedVertices.has(vertex)) {
+                    const [source, target] = [current, vertex].sort((a, b) => Number(a) - Number(b));
                     visitedVertices.add(vertex);
-                    visitedEdges.add(`${current}-${vertex}`);
+                    visitedEdges.add(`${source}-${target}`);
                     queue.push(vertex);
 
                     steps.push({
@@ -33,6 +34,12 @@ export const BreadthFirstSearch = (start: string, adjacencyList: AdjacencyList) 
             }
         }
     }
+
+    steps.push({
+        current: null,
+        vertices: Array.from(visitedVertices),
+        edges: Array.from(visitedEdges),
+    });
 
     return steps;
 }

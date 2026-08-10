@@ -6,6 +6,7 @@ import {ALGORITHM_DELAY, type Point} from "../utils/Constants.ts";
 import {Mode, type ModeType} from "../utils/Mode.ts";
 import {type AlgorithmStep, type AlgorithmType} from "../utils/Algorithms.ts";
 import {createAdjacencyList} from "../utils/AdjacencyList.ts";
+import type {Messages} from "primereact/messages";
 
 type GraphContextValue = {
     vertices: VertexProps[],
@@ -23,9 +24,11 @@ type GraphContextValue = {
     switchMode: (m: ModeType) => void,
     currentAlgorithm: AlgorithmType | null,
     setAlgorithm: (algorithm: AlgorithmType | null) => void,
+    clearAnimation: () => void,
     runAlgorithm: () => void,
     activeStep: AlgorithmStep | null,
     isAnimationRunning: boolean,
+    messageRef: React.RefObject<Messages | null>;
 }
 
 const GraphContext = createContext<GraphContextValue | null>(null);
@@ -42,11 +45,11 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
     const [mode, setMode] = useState<ModeType>(Mode.Select);
     const [currentAlgorithm, setCurrentAlgorithm] = useState<AlgorithmType | null>(null);
     const adjacencyList = useMemo(() => createAdjacencyList(vertices, edges), [vertices, edges]);
+    const messageRef = useRef<Messages>(null);
 
     const [targetVertex, setTargetVertex] = useState<string | null>(null);
     const [activeStep, setActiveStep] = useState<AlgorithmStep | null>(null);
     const [isAnimationRunning, setIsAnimationRunning] = useState<boolean>(false);
-
 
     const setAlgorithm = (algorithm: AlgorithmType | null) => {
         setCurrentAlgorithm(algorithm);
@@ -118,10 +121,14 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
                 await sleep(ALGORITHM_DELAY);
             }
         } finally {
-            // setActiveStep(null);
             setIsAnimationRunning(false);
         }
     };
+
+    const clearAnimation = () => {
+        setActiveStep(null);
+        setIsAnimationRunning(false);
+    }
 
     const contextValue: GraphContextValue = {
         vertices,
@@ -140,8 +147,10 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         currentAlgorithm,
         setAlgorithm,
         runAlgorithm,
+        clearAnimation,
         activeStep,
         isAnimationRunning,
+        messageRef,
     }
 
     return (
