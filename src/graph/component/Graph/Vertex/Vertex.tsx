@@ -14,7 +14,6 @@ export type VertexProps = {
 export const Vertex = (props: VertexProps) => {
     const label = props.label || EMPTY_STRING;
     let color = VERTEX_COLORS.default;
-
     if (props.isVisited) {
         color = VERTEX_COLORS.visited;
     }

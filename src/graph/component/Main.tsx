@@ -4,12 +4,14 @@ import {Actionbar} from "./Actionbar/Actionbar.tsx";
 import {GraphContextProvider} from "../context/GraphContext.tsx";
 import {ValidationMessage} from "./Message/ValidationMessage.tsx";
 import {MessageManager} from "./Message/MessageManager.tsx";
+import {EditEdgeDialog} from "./Graph/Edge/EditEdgeDialog/EditEdgeDialog.tsx";
 
 export function Main() {
   return (
       <GraphContextProvider>
           <ValidationMessage />
           <MessageManager />
+          <EditEdgeDialog />
           <Splitter className="w-screen h-screen" layout={"horizontal"}>
               <SplitterPanel size={5} minSize={5}>
                   <Actionbar />

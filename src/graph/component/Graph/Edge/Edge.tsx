@@ -8,6 +8,7 @@ export type EdgeProps = {
     weight: number;
     isSelected?: boolean;
     isVisited?: boolean;
+    onEdgeClick?: (id: string, event: React.MouseEvent) => void;
 };
 
 export const Edge = (props: EdgeProps) => {
@@ -23,7 +24,7 @@ export const Edge = (props: EdgeProps) => {
     const y = (props.source.position.y + props.target.position.y) / 2;
 
     return (
-        <g className="select-none">
+        <g className="select-none" onClick={(event) => props.onEdgeClick?.(props.id, event)}>
             <line
                 x1={props.source.position.x}
                 y1={props.source.position.y}
@@ -36,7 +37,7 @@ export const Edge = (props: EdgeProps) => {
                 y={y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className={`text-lg font-bold ${color} stroke-black stroke-6 [paint-order:stroke]`}
+                className={`text-lg font-bold ${color} [paint-order:stroke] transition-all duration-300`}
             >
                 {props.weight}
             </text>

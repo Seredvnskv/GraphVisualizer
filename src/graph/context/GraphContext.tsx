@@ -20,6 +20,11 @@ type GraphContextValue = {
     updateVertex: (updatedVertex: VertexProps) => void,
     addEdge: (s: string, t: string) => void,
     deleteEdge: (id: string) => void,
+    selectedEdge: string | null,
+    setSelectedEdge: (id: string | null) => void,
+    editEdge: boolean,
+    setEditEdge: (edit: boolean) => void,
+    updateEdge: (weight: number) => void,
     currentMode: () => ModeType,
     switchMode: (m: ModeType) => void,
     currentAlgorithm: AlgorithmType | null,
@@ -41,6 +46,8 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
     const [vertices, setVertices] = useState<VertexProps[]>(InitialGraphState().vertices);
     const [selectedVertex, setSelectedVertex] = useState<string | null>(null);
     const [edges, setEdges] = useState<EdgeProps[]>(InitialGraphState().edges);
+    const [selectedEdge, setSelectedEdge] = useState<string | null>(null);
+    const [editEdge, setEditEdge] = useState<boolean>(false);
     const verticesCount = useRef(vertices.length);
     const [mode, setMode] = useState<ModeType>(Mode.Select);
     const [currentAlgorithm, setCurrentAlgorithm] = useState<AlgorithmType | null>(null);
@@ -70,7 +77,7 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         setVertices(prev => [...prev, {id: `${verticesCount.current}`, position, label: `${verticesCount.current}`}]);
     }
 
-    const updateVertex= (updatedVertex: VertexProps) => {
+    const updateVertex = (updatedVertex: VertexProps) => {
         setVertices(prev => prev.map(vertex => vertex.id === updatedVertex.id ? updatedVertex : vertex));
     }
 
@@ -99,17 +106,17 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         setEdges(prev => prev.filter(edge => edge.id !== id));
     }
 
+    const updateEdge = (weight: number) => {
+        if (!selectedEdge) return;
+        setEdges(prev => prev.map(edge => edge.id === selectedEdge ? {...edge, weight} : edge));
+    }
+
     const runAlgorithm = async () => {
         if (!currentAlgorithm || !selectedVertex || isAnimationRunning) return;
 
-        let steps;
-        if (currentAlgorithm.id === "dijkstra") {
-            steps = currentAlgorithm.function(selectedVertex, targetVertex, adjacencyList);
-            console.log(steps, edges);
-        }
-        else {
-            steps = currentAlgorithm.function(selectedVertex, adjacencyList);
-        }
+        const steps = currentAlgorithm.path
+            ? currentAlgorithm.function(selectedVertex, targetVertex, adjacencyList)
+            : currentAlgorithm.function(selectedVertex, adjacencyList);
 
         if (!steps || steps.length === 0) return;
 
@@ -142,6 +149,11 @@ export const GraphContextProvider = ({children}: GraphProviderProps) => {
         updateVertex,
         addEdge,
         deleteEdge,
+        selectedEdge,
+        setSelectedEdge,
+        editEdge,
+        setEditEdge,
+        updateEdge,
         currentMode,
         switchMode,
         currentAlgorithm,

@@ -67,6 +67,20 @@ export const Canvas = () => {
         graph.addEdge(source, target);
     }
 
+    const selectEdge = (id: string) => {
+        id === graph.selectedEdge ? graph.setSelectedEdge(null) : graph.setSelectedEdge(id);
+    }
+
+    const onEdgeClick = (id: string, event: React.MouseEvent) => {
+        if (graph.currentMode() === Mode.Select) {
+            selectEdge(id);
+            if (event.ctrlKey) graph.setEditEdge(true);
+        }
+        if (graph.currentMode() === Mode.Delete) {
+            graph.deleteEdge(id);
+        }
+    }
+
     const drawGraph = () => {
         return (
             <>
@@ -77,6 +91,8 @@ export const Canvas = () => {
                         source={edge.source}
                         target={edge.target}
                         weight={edge.weight}
+                        onEdgeClick={onEdgeClick}
+                        isSelected={graph.selectedEdge === edge.id}
                         isVisited={graph.activeStep?.edges.includes(edge.id)}
                     />
                 ))}
